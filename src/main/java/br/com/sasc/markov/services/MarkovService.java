@@ -5,6 +5,7 @@
  */
 package br.com.sasc.markov.services;
 
+import java.math.BigDecimal;
 import org.springframework.util.Assert;
 
 /**
@@ -17,8 +18,9 @@ public class MarkovService {
     private float[][] inputMatrix;
     private float[][] probabilityMatrix;
     private float[][] identityMatrix;
+    private float[][] results;
     private float max;
-    
+    private int loop;
 
     /**
      *
@@ -47,6 +49,16 @@ public class MarkovService {
         }
     }
 
+    private void print(int loop, float[][] matrix) {
+        System.out.println("M" + loop + ":");
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix.length; c++) {
+                System.out.print(String.format(" %.4f ", matrix[r][c]));
+            }
+            System.out.println("\n");
+        }
+    }
+
     private void buildIdentityMatrix() {
         identityMatrix = new float[dimension][dimension];
         for (int i = 0; i < dimension; i++) {
@@ -58,9 +70,46 @@ public class MarkovService {
         probabilityMatrix = new float[dimension][dimension];
         for (int r = 0; r < dimension; r++) {
             for (int c = 0; c < dimension; c++) {
-                probabilityMatrix[c][r] = identityMatrix[r][c] - (inputMatrix[r][c] / max);
+                probabilityMatrix[r][c] = identityMatrix[r][c] - (inputMatrix[r][c] / max);
             }
         }
+    }
+
+    private boolean validate(float[][] matrix) {
+        for (int c = 0; c < dimension; c++) {
+            for (int r = 0; r < dimension - 1; r++) {
+                if (!new BigDecimal(matrix[r][c]).setScale(4, BigDecimal.ROUND_HALF_UP).equals(
+                        new BigDecimal(matrix[r + 1][c]).setScale(4, BigDecimal.ROUND_HALF_UP))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public float[][] multiply(float[][] input) {
+        float c[][] = new float[dimension][dimension];
+
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                c[i][j] = 0;
+            }
+        }
+
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
+                for (int k = 0; k < dimension; k++) {
+                    c[i][j] = c[i][j] + (input[i][k] * input[k][j]);
+                }
+            }
+        }
+
+        print(loop++, c);
+        if (!validate(c)) {
+            multiply(c);
+        }
+
+        return c;
     }
 
     public MarkovService withInput(String inputMatrix) throws IllegalArgumentException {
@@ -68,6 +117,11 @@ public class MarkovService {
         convertTextToMatrix(inputMatrix);
         buildIdentityMatrix();
         buildProbabilityMatrix();
+        loop = 2;
+        float[][] cc = multiply(probabilityMatrix);
+        System.out.println("A: " + cc[0][0]);
+        System.out.println("B: " + cc[1][0]);
+        System.out.println("C: " + cc[2][0]);
 
         return this;
     }
