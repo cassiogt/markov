@@ -6,6 +6,10 @@
 package br.com.sasc.markov.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 import org.springframework.util.Assert;
 
 /**
@@ -113,6 +117,7 @@ public class MarkovService {
     }
 
     public MarkovService withInput(String inputMatrix) throws IllegalArgumentException {
+        LocalDateTime dt1 = LocalDateTime.now();
 
         convertTextToMatrix(inputMatrix);
         buildIdentityMatrix();
@@ -122,7 +127,9 @@ public class MarkovService {
         System.out.println("A: " + cc[0][0]);
         System.out.println("B: " + cc[1][0]);
         System.out.println("C: " + cc[2][0]);
-
+        LocalDateTime dt2 = LocalDateTime.now();
+        
+        System.out.println("DIFF: " + dt1.until(dt2, ChronoUnit.MILLIS));
         return this;
     }
 
