@@ -20,11 +20,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     @RequestMapping("/")
-    public ResponseEntity<?> convert(@RequestParam(value = "input", defaultValue = "Cassio") String input) {
+    public ResponseEntity<?> execute(@RequestParam(value = "input", defaultValue = "Cassio") String input) {
         try {
-            new MarkovService().withInput(input);
-            return new ResponseEntity<>("TODO", HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+            MarkovService ms = new MarkovService()
+                    .from(input)
+                    .enableSteps()
+                    .addLabels("A", "B", "C")
+                    .execute();
+            return new ResponseEntity<>(ms.toJson(), HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.PRECONDITION_FAILED);
         }
     }
