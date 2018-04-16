@@ -1,12 +1,84 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Your prismic.io project</title>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="images/favicon.ico" rel="shortcut icon">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="css/main.css">
+    <title>SASC</title>
+</head>
+<body>
+<div class="container">
 
-        <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-    </head>
-    <body>
-        <div>OLA</div>
-    </body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded">
+        <span class="navbar-brand">SASC</span>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" id="homeLink">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="configLink">Configurações</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="helpLink">Ajuda</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <p>
+
+    <div id="config" class="container hide">
+        <div class="form-group">
+            <label for="steps">Limite para teste de probabilidade (padrão 1000): </label>
+            <input type="number" class="form-control" id="steps" name="steps" value="1000">
+            <small id="emailHelp" class="form-text text-muted">Será gerado número randomico para testar as
+                probabilidades. O término do mesmo se dará através do primeiro estado a atingir o número acima.
+            </small>
+        </div>
+    </div>
+    <div id="help" class="container hide">
+        <p>Esta é uma tela de ajuda....</p>
+    </div>
+    <form class="row" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+        <div class="col-md-8">
+            <div class="input-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" name="file" data-allowed-file-extensions="['txt']">
+                    <label class="custom-file-label" for="file">Selecione um arquivo para efetuar o cálculo.</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <button class="btn btn-outline-info btn-block" type="submit" id="submitBtn" disabled>Calcular</button>
+            </div>
+        </div>
+    </form>
+    <div id="alerts">
+    </div>
+    <hr/>
+    <div id="result" class="container">
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script src="js/index.js"></script>
+</body>
 </html>

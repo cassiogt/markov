@@ -4,51 +4,55 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import lombok.Getter;
 import org.springframework.util.Assert;
 
 /**
- *
  * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MarkovService {
 
+    private final Random random = new Random();
+
     // <editor-fold defaultstate="collapsed" desc="Private members and methods.">
     private final static ObjectMapper MAPPER = new ObjectMapper();
 
     /* Matrix dimension */
-    @Getter
-    private int dimension;
+    private boolean shouldSaveAllSteps;
 
-    /* Original Matrix */
+    /* Matrix dimension */
     @Getter
-    private float[][] inputMatrix;
+    private Integer dimension;
 
-    /* Results array */
-    @Getter
-    private List<Float> results;
-
-    /* Results label array */
-    @Getter
-    private List<String> resultLabels;
-
-    /* Absolute max value */
     @Getter
     private float max;
 
     /* Steps logging */
     @Getter
-    private List<float[][]> steps;
+    private List<float[][]> matrixList;
 
+    /* Results array */
+    @Getter
+    private float[] results;
+
+    @Getter
+    private int[] counter;
+
+    /* Absolute max value */
     public MarkovService() {
-        this.steps = null;
+        this.matrixList = new ArrayList<>();
     }
 
     /**
@@ -61,7 +65,7 @@ public class MarkovService {
         for (int i = 0; i < dimension; i++) {
             identityMatrix[i][i] = 1;
         }
-        addStep(identityMatrix);
+        matrixList.add(identityMatrix);
         return identityMatrix;
     }
 
@@ -75,10 +79,10 @@ public class MarkovService {
         float[][] probabilityMatrix = new float[dimension][dimension];
         for (int r = 0; r < dimension; r++) {
             for (int c = 0; c < dimension; c++) {
-                probabilityMatrix[r][c] = identityMatrix[r][c] - (inputMatrix[r][c] / max);
+                probabilityMatrix[r][c] = identityMatrix[r][c] - (matrixList.get(0)[r][c] / max);
             }
         }
-        addStep(probabilityMatrix);
+        matrixList.add(probabilityMatrix);
         return probabilityMatrix;
     }
 
@@ -92,25 +96,24 @@ public class MarkovService {
 
         float tmp[][] = new float[dimension][dimension];
 
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
+        for (int r = 0; r < dimension; r++) {
+            for (int c = 0; c < dimension; c++) {
                 for (int k = 0; k < dimension; k++) {
-                    tmp[i][j] = tmp[i][j] + (input[i][k] * input[k][j]);
+                    tmp[r][c] = tmp[r][c] + (input[r][k] * input[k][c]);
                 }
             }
         }
 
+        saveSteps(tmp);
         if (!finished(tmp)) {
             tmp = multiply(tmp);
         }
 
-        addStep(tmp);
         return tmp;
     }
 
     /**
-     * Validates matrix returning {@code true} if reached its convergence or
-     * {@code false}, otherwise.
+     * Validates matrix returning {@code true} if reached its convergence or {@code false}, otherwise.
      *
      * @param matrix the matrix to be validated.
      * @return {@code true} if converged or {@code false}, otherwise.
@@ -129,61 +132,87 @@ public class MarkovService {
     }
 
     /**
-     * Converts a matrix to String and put this on the list of steps
-     * {@link MarkovService#steps}.
+     * Converts a matrix to String and put this on the list of matrixList {@link MarkovService#matrixList}.
      *
      * @param matrix is the matrix to be converted.
      */
-    private void addStep(float[][] matrix) {
+    private void saveSteps(float[][] matrix) {
 
-        if (Objects.isNull(steps)) {
+        if (!shouldSaveAllSteps) {
             return;
         }
 
-        steps.add(matrix);
+        matrixList.add(matrix);
 
     }
 // </editor-fold>
 
     /**
-     * Enable steps tracing.
+     * Enable matrixList tracing.
      *
      * @return this {@link MarkovService}.
      */
-    public MarkovService enableSteps() {
-        this.steps = new ArrayList<>();
+    public MarkovService saveAllSteps() {
+        this.shouldSaveAllSteps = true;
         return this;
     }
 
-    /**
-     * Transforms the text passed by parameter to an float number matrix and
-     * stores it on {@link MarkovService#inputMatrix}. Also verifies input data
-     * and return IllegalArgumetException if an error occurred.
-     *
-     * @param inputText the text representing a matrix.
-     * @return this {@link MarkovService}.
-     */
-    public MarkovService from(String inputText) {
+    public MarkovService fromListOfLines(List<String> lines) {
 
-        Assert.notNull(inputText, "String not informed");
-        Assert.hasText(inputText, "String not informed");
+        Assert.notNull(lines, "Matriz não informada.");
+        Assert.notEmpty(lines, "Matriz não informada.");
 
-        String[] rows = inputText.replace(",", ".").trim().split("\n");
-        dimension = rows.length;
-        inputMatrix = new float[dimension][dimension];
+        int row = 0;
+        for (String line : lines) {
+            if (!line.startsWith("#") && line.length() >= 1) {
+                String[] cols = line.trim().split(" ");
+                if (dimension == null) {
+                    if (cols.length == 1) {
+                        Assert.isTrue(cols[0].matches("[-]?[0-9]"), "Entrada informada na matriz não é numérico.");
+                        dimension = Integer.parseInt(cols[0]);
+                        matrixList.add(new float[dimension][dimension]);
+                    }
+                } else {
+                    Assert.isTrue(cols.length == dimension, "A matriz não corresponde à dimensão informada.");
+                    for (int c = 0; c < dimension; c++) {
+                        Assert.isTrue(cols[c].matches("[-]?[0-9]*\\.?[0-9]+"), "Entrada informada na matriz não é numérica.");
+                        matrixList.get(0)[row][c] = Float.parseFloat(cols[c]);
+                    }
+                    row++;
+                }
+            }
+        }
+        Assert.notNull(dimension, "Não foi informada a dimensão da matriz.");
 
-        for (int r = 0; r < dimension; r++) {
-            String[] cols = rows[r].trim().split(" ");
-            Assert.isTrue(cols.length == dimension, "Size os clomuns and rows differs");
-            for (int c = 0; c < dimension; c++) {
-                Assert.isTrue(cols[c].matches("[-]?[0-9]*\\.?[0-9]+"), "Input is not number");
-                float val = Float.parseFloat(cols[c]);
-                max = Math.abs(val) > Math.abs(max) ? val : max;
-                inputMatrix[r][c] = val;
+        float sum = 0.0f;
+        for (int idx = 0; idx < dimension; idx++) {
+            sum += matrixList.get(0)[idx][idx];
+        }
+        if (sum == 0) {//Se a matriz foi informada com 0 na diagonal principal
+            for (int r = 0; r < dimension; r++) {
+                sum = 0;
+                for (int c = 0; c < dimension; c++) {
+                    sum += matrixList.get(0)[r][c];
+                }
+                matrixList.get(0)[r][r] = 0 - sum;
             }
         }
 
-        addStep(inputMatrix);
+        for (int r = 0; r < dimension; r++) {
+            sum = 0;
+            for (int c = 0; c < dimension; c++) {
+                sum += matrixList.get(0)[r][c];
+                max = Math.abs(matrixList.get(0)[r][c]) > Math.abs(max) ? matrixList.get(0)[r][c] : max;
+            }
+            Assert.isTrue(sum == 0, "A soma das colunas não é igual a 0.");
+        }
+        
+        
+        try {
+            System.out.println("" + toJson());
+        } catch (JsonProcessingException ex) {
+            
+        }
 
         return this;
     }
@@ -193,27 +222,41 @@ public class MarkovService {
      *
      * @return this {@link MarkovService}.
      */
-    public MarkovService execute() {
+    public MarkovService resolveDTMC() {
 
         float[][] cc = multiply(buildProbabilityMatrix(buildIdentityMatrix()));
-        results = new ArrayList<>();
+        if (!shouldSaveAllSteps) {
+            matrixList.add(cc);
+        }
+
+        results = new float[dimension];
         for (int x = 0; x < dimension; x++) {
-            results.add(cc[0][x]);
+            results[x] = cc[0][x];
         }
 
         return this;
 
     }
 
-    /**
-     * Creates a list of labels, used to nicely print the results;
-     *
-     * @param labels the labels to be used.
-     * @return this {@link MarkovService}.
-     */
-    public MarkovService addLabels(String... labels) {
-        resultLabels = new ArrayList<>();
-        resultLabels.addAll(Arrays.asList(labels));
+    public MarkovService calculateStepsUntil(int maxSteps) {
+
+        float[] limits = new float[dimension];
+        int idx = 0;
+        for (; idx < results.length; idx++) {
+            limits[idx] = idx > 0 ? results[idx] + limits[idx - 1] : results[idx];
+        }
+
+        counter = new int[dimension];
+
+        do {
+            float rand = random.nextFloat();
+            for (idx = 0; idx < results.length; idx++) {
+                if (rand <= limits[idx]) {
+                    counter[idx]++;
+                    break;
+                }
+            }
+        } while (counter[idx] < maxSteps);
         return this;
     }
 
