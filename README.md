@@ -1,9 +1,9 @@
 # markov
 A CTMC to DTMC converter
 
-###Para executar:
+### To run:
 java -jar markov.jar
 
-###Para utilizar o programa:
-Acesse um browser e coloque o endereço: 
+### To use:
+On a web browser type: 
 http://localhost:9000
