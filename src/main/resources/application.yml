@@ -10,3 +10,5 @@ spring:
   http:
     multipart:
       enabled: false
+banner:
+  location: classpath:banner.txt

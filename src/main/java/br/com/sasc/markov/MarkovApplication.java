@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Bean;
 public class MarkovApplication {
 
     public static void main(String[] args) throws JsonProcessingException {
-        SpringApplication.run(MarkovApplication.class, args);
+        SpringApplication application = new SpringApplication(MarkovApplication.class);
+        application.setLogStartupInfo(false);
+        application.run(args);
     }
 
     @Bean
