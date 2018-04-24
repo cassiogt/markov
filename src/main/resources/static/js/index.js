@@ -6,6 +6,15 @@ $(document).ready(function () {
         $("li.nav-item").removeClass('active');
     }
 
+    $('#textInput').on('change keyup paste', function () {
+        console.log();
+        if($('#textInput').val().length > 1 || ($('.custom-file-input').val() !== undefined && $('.custom-file-input').val() !== '')){
+            $("#submitBtn").removeAttr('disabled');
+        }else{
+            $("#submitBtn").attr('disabled', 'disabled');
+        }
+    });
+
     /* show file value after file select */
     $('.custom-file-input').on('change', function () {
         var filename = $(this).val();
@@ -65,7 +74,7 @@ $(document).ready(function () {
             console.log('Not Supported.');
             return;
         }
-
+        $('#textInput').empty();
         console.log(data);
 
         $.ajax({
@@ -87,10 +96,11 @@ $(document).ready(function () {
     }
 
     function doCalculate() {
+        console.log($('#steps, #textInput').serialize());
 
         $.ajax({
             url: '/convert',
-            data: $('#steps').serialize(),
+            data: $('#steps, #textInput').serialize() ,
             method: 'GET',
             success: function (data) {
                 console.log(data);

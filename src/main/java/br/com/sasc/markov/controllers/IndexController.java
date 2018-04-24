@@ -10,6 +10,8 @@ import br.com.sasc.markov.services.storage.StorageService;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +41,19 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/convert")
-    public ResponseEntity<String> execute(@RequestParam(value = "steps", defaultValue = "1000") Integer steps, Model model) {
+    public ResponseEntity<String> execute(@RequestParam(value = "steps", defaultValue = "1000") Integer steps, @RequestParam(value = "text") String text) {
         try {
 
-            Path arquivo = storageService.loadAll().reduce((first, second) -> second).orElse(null);
-
-            if (arquivo != null) {
-                arquivo = storageService.getRootLocation().resolve(arquivo);
+            List<String> lines = Collections.emptyList();
+            if (!text.isEmpty()) {
+                lines = Arrays.asList(text.split("\n"));
+            } else {
+                Path arquivo = storageService.loadAll().reduce((first, second) -> second).orElse(null);
+                if (arquivo != null) {
+                    arquivo = storageService.getRootLocation().resolve(arquivo);
+                    lines = Files.readAllLines(arquivo);
+                }
             }
-
-            List<String> lines = Files.readAllLines(arquivo);
 
             MarkovService ms = new MarkovService()
                     .fromListOfLines(lines)

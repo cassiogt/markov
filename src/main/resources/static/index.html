@@ -47,17 +47,34 @@
         <p>Esta é uma tela de ajuda....</p>
     </div>
     <form class="row" method="POST" enctype="multipart/form-data" id="fileUploadForm">
-        <div class="col-md-8">
-            <div class="input-group">
-                <div class="custom-file">
-                    <input type="file" class="custom-file-input" name="file" data-allowed-file-extensions="['txt']">
-                    <label class="custom-file-label" for="file">Selecione um arquivo para efetuar o cálculo.</label>
-                </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="textInput">Insira uma matriz ou...</label>
+                <textarea class="form-control text-area " rows="5" id="textInput" name="text"></textarea>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="input-group">
-                <button class="btn btn-outline-info btn-block" type="submit" id="submitBtn" disabled>Calcular</button>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>... selecione um arquivo para efetuar o cálculo</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="fileInput" name="file"
+                                       data-allowed-file-extensions="['txt']">
+                                <label class="custom-file-label" for="fileInput"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="input-group">
+                        <button class="btn btn-outline-info btn-block" type="submit" id="submitBtn" disabled>Calcular
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </form>

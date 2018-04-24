@@ -63,3 +63,7 @@ body {
 a {
     cursor: pointer;
 }
+
+.text-area{
+    font-size: 0.8rem;
+}
