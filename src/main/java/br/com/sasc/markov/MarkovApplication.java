@@ -29,14 +29,6 @@ public class MarkovApplication {
         SpringApplication application = new SpringApplication(MarkovApplication.class);
         application.setLogStartupInfo(false);
         application.run(args);
-        if (Desktop.isDesktopSupported()) {
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                desktop.browse(new URI("http://localhost:9000"));
-            } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Bean
@@ -44,6 +36,14 @@ public class MarkovApplication {
         return (args) -> {
             storageService.deleteAll();
             storageService.init();
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.browse(new URI("http://localhost:9000"));
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
         };
     }
 }

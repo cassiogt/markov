@@ -220,7 +220,6 @@ public class MarkovService {
             Assert.isTrue(sum == 0, "A soma das colunas não é igual a 0.");
         }
 
-
         try {
             System.out.println(toJson());
         } catch (JsonProcessingException ex) {
@@ -243,9 +242,9 @@ public class MarkovService {
         }
 
         results = new double[dimension];
-        for (int x = 0; x < dimension; x++) {
-            results[x] = cc[0][x];
-        }
+        System.arraycopy(cc[0], 0, results, 0, dimension);
+
+        Arrays.sort(results);
 
         return this;
 
@@ -254,10 +253,7 @@ public class MarkovService {
     /**
      * Generates random numbers to test probabilities.
      *
-     * @param type     if {@code 1} then the calculation ends if at least
-     *                 one entry reaches {@code maxSteps} or, if {@code 2},
-     *                 the calculation ends if the sum of all entries
-     *                 reaches {@code maxSteps}.
+     * @param type if {@code 1} then the calculation ends if at least one entry reaches {@code maxSteps} or, if {@code 2}, the calculation ends if the sum of all entries reaches {@code maxSteps}.
      * @param maxSteps the maximum number of steps.
      * @return this class;
      */

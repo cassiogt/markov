@@ -79,7 +79,7 @@ public class IndexController {
 
             return new ResponseEntity<String>(ms.toJson(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);   
         }
     }
 }
