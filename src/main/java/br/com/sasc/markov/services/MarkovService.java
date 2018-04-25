@@ -39,15 +39,15 @@ public class MarkovService {
     private Integer dimension;
 
     @Getter
-    private float max;
+    private double max;
 
     /* Steps logging */
     @Getter
-    private List<float[][]> matrixList;
+    private List<double[][]> matrixList;
 
     /* Results array */
     @Getter
-    private float[] results;
+    private double[] results;
 
     @Getter
     private int[] counter;
@@ -62,8 +62,8 @@ public class MarkovService {
      *
      * @return a identity matrix.
      */
-    private float[][] buildIdentityMatrix() {
-        float[][] identityMatrix = new float[dimension][dimension];
+    private double[][] buildIdentityMatrix() {
+        double[][] identityMatrix = new double[dimension][dimension];
         for (int i = 0; i < dimension; i++) {
             identityMatrix[i][i] = 1;
         }
@@ -77,8 +77,8 @@ public class MarkovService {
      * @param identityMatrix a identity matrix with the same size as rate matrix
      * @return a matrix with probabilities.
      */
-    private float[][] buildProbabilityMatrix(float[][] identityMatrix) {
-        float[][] probabilityMatrix = new float[dimension][dimension];
+    private double[][] buildProbabilityMatrix(double[][] identityMatrix) {
+        double[][] probabilityMatrix = new double[dimension][dimension];
         for (int r = 0; r < dimension; r++) {
             for (int c = 0; c < dimension; c++) {
                 probabilityMatrix[r][c] = identityMatrix[r][c] - (matrixList.get(0)[r][c] / max);
@@ -94,9 +94,9 @@ public class MarkovService {
      * @param input the matrix that will be multiplied.
      * @return the result matrix.
      */
-    private float[][] multiply(float[][] input) {
+    private double[][] multiply(double[][] input) {
 
-        float tmp[][] = new float[dimension][dimension];
+        double tmp[][] = new double[dimension][dimension];
 
         for (int r = 0; r < dimension; r++) {
             for (int c = 0; c < dimension; c++) {
@@ -120,7 +120,7 @@ public class MarkovService {
      * @param matrix the matrix to be validated.
      * @return {@code true} if converged or {@code false}, otherwise.
      */
-    private boolean finished(float[][] matrix) {
+    private boolean finished(double[][] matrix) {
 
         for (int c = 0; c < dimension; c++) {
             for (int r = 0; r < dimension - 1; r++) {
@@ -138,7 +138,7 @@ public class MarkovService {
      *
      * @param matrix is the matrix to be converted.
      */
-    private void saveSteps(float[][] matrix) {
+    private void saveSteps(double[][] matrix) {
 
         if (!shouldSaveAllSteps) {
             return;
@@ -177,17 +177,19 @@ public class MarkovService {
                         .replaceAll("\\t", "")
                         .replaceAll("\\r", "")
                         .split(" ");
-                if (dimension == null) {
-                    if (cols.length == 1) {
-                        Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
-                        dimension = Integer.parseInt(cols[0]);
-                        matrixList.add(new float[dimension][dimension]);
-                    }
+                if (cols.length == 1) {
+                    Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
+                    dimension = Integer.parseInt(cols[0]);
+                    matrixList.add(new double[dimension][dimension]);
                 } else {
+                    if (Objects.isNull(dimension)) {
+                        dimension = cols.length;
+                        matrixList.add(new double[dimension][dimension]);
+                    }
                     Assert.isTrue(cols.length == dimension, "A matriz não corresponde à dimensão informada.");
                     for (int c = 0; c < dimension; c++) {
                         Assert.isTrue(cols[c].matches("[-]?[0-9]*\\.?[0-9]+"), "Entrada informada na matriz não é numérica.");
-                        matrixList.get(0)[row][c] = Float.parseFloat(cols[c]);
+                        matrixList.get(0)[row][c] = Double.parseDouble(cols[c]);
                     }
                     row++;
                 }
@@ -220,7 +222,7 @@ public class MarkovService {
 
 
         try {
-            System.out.println("" + toJson());
+            System.out.println(toJson());
         } catch (JsonProcessingException ex) {
 
         }
@@ -235,12 +237,12 @@ public class MarkovService {
      */
     public MarkovService resolveDTMC() {
 
-        float[][] cc = multiply(buildProbabilityMatrix(buildIdentityMatrix()));
+        double[][] cc = multiply(buildProbabilityMatrix(buildIdentityMatrix()));
         if (!shouldSaveAllSteps) {
             matrixList.add(cc);
         }
 
-        results = new float[dimension];
+        results = new double[dimension];
         for (int x = 0; x < dimension; x++) {
             results[x] = cc[0][x];
         }
@@ -261,7 +263,7 @@ public class MarkovService {
      */
     public MarkovService calculateSteps(int type, int maxSteps) {
 
-        float[] limits = new float[dimension];
+        double[] limits = new double[dimension];
         int idx = 0;
         for (; idx < results.length; idx++) {
             limits[idx] = idx > 0 ? results[idx] + limits[idx - 1] : results[idx];

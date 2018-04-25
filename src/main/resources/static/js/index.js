@@ -96,7 +96,7 @@ $(document).ready(function () {
 
     function doCalculate() {
 
-        console.log($('#steps, #textInput, #stepsType').serialize());
+        $('#result').empty();
 
         $.ajax({
             url: '/convert',
