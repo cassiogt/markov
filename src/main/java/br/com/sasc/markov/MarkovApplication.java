@@ -11,6 +11,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+/**
+ * Application Main Class
+ *
+ * @author Cássio Tatsch (tatschcassio@gmail.com)
+ */
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
 public class MarkovApplication {
@@ -19,6 +29,14 @@ public class MarkovApplication {
         SpringApplication application = new SpringApplication(MarkovApplication.class);
         application.setLogStartupInfo(false);
         application.run(args);
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            try {
+                desktop.browse(new URI("http://localhost:9000"));
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Bean

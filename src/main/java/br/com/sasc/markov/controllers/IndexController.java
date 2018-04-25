@@ -18,12 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author ctatsch
+ * Main controller.
+ *
+ * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @Controller
 public class IndexController {
@@ -35,13 +36,28 @@ public class IndexController {
         this.storageService = storageService;
     }
 
+    /**
+     * Home page request
+     *
+     * @return the home page.
+     */
     @RequestMapping(value = {"", "/"})
     public String index() {
         return "index.html";
     }
 
+    /**
+     * CTMC to DTMC request
+     *
+     * @param steps     is the maximum number of steps to be used to test the calculated probabilities.
+     * @param stepsType {@code 1} if the maximum number is the sum of at least one entry, or {@code 2} if the maximum number is the sum of all entries.
+     * @param text      is the matrix sent through text area.
+     * @return a JSON message with all information or an error message if it occurs.
+     */
     @RequestMapping(value = "/convert")
-    public ResponseEntity<String> execute(@RequestParam(value = "steps", defaultValue = "1000") Integer steps, @RequestParam(value = "text") String text) {
+    public ResponseEntity<String> execute(@RequestParam(value = "steps", defaultValue = "1000") Integer steps,
+                                          @RequestParam(value = "stepsType", defaultValue = "2") Integer stepsType,
+                                          @RequestParam(value = "text") String text) {
         try {
 
             List<String> lines = Collections.emptyList();
@@ -59,7 +75,7 @@ public class IndexController {
                     .fromListOfLines(lines)
                     .saveAllSteps()
                     .resolveDTMC()
-                    .calculateStepsUntil(steps);
+                    .calculateSteps(stepsType, steps);
 
             return new ResponseEntity<String>(ms.toJson(), HttpStatus.OK);
         } catch (Exception e) {

@@ -75,7 +75,6 @@ $(document).ready(function () {
             return;
         }
         $('#textInput').empty();
-        console.log(data);
 
         $.ajax({
             type: 'POST',
@@ -96,14 +95,14 @@ $(document).ready(function () {
     }
 
     function doCalculate() {
-        console.log($('#steps, #textInput').serialize());
+
+        console.log($('#steps, #textInput, #stepsType').serialize());
 
         $.ajax({
             url: '/convert',
-            data: $('#steps, #textInput').serialize() ,
+            data: $('#steps, #textInput, #stepsType').serialize() ,
             method: 'GET',
             success: function (data) {
-                console.log(data);
                 printResult(data);
             },
             error: function (e) {

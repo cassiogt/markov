@@ -18,6 +18,8 @@ import lombok.Getter;
 import org.springframework.util.Assert;
 
 /**
+ * Markov converter methods.
+ *
  * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -157,6 +159,12 @@ public class MarkovService {
         return this;
     }
 
+    /**
+     * Reads a list of lines and converts it to a matrix.
+     *
+     * @param lines the array of lines.
+     * @return this class.
+     */
     public MarkovService fromListOfLines(List<String> lines) {
 
         Assert.notNull(lines, "Matriz não informada.");
@@ -165,10 +173,13 @@ public class MarkovService {
         int row = 0;
         for (String line : lines) {
             if (!line.startsWith("#") && line.length() >= 1) {
-                String[] cols = line.trim().split(" ");
+                String[] cols = line.trim()
+                        .replaceAll("\\t", "")
+                        .replaceAll("\\r", "")
+                        .split(" ");
                 if (dimension == null) {
                     if (cols.length == 1) {
-                        Assert.isTrue(cols[0].matches("[-]?[0-9]"), "Entrada informada na matriz não é numérico.");
+                        Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
                         dimension = Integer.parseInt(cols[0]);
                         matrixList.add(new float[dimension][dimension]);
                     }
@@ -206,12 +217,12 @@ public class MarkovService {
             }
             Assert.isTrue(sum == 0, "A soma das colunas não é igual a 0.");
         }
-        
-        
+
+
         try {
             System.out.println("" + toJson());
         } catch (JsonProcessingException ex) {
-            
+
         }
 
         return this;
@@ -238,25 +249,47 @@ public class MarkovService {
 
     }
 
-    public MarkovService calculateStepsUntil(int maxSteps) {
+    /**
+     * Generates random numbers to test probabilities.
+     *
+     * @param type     if {@code 1} then the calculation ends if at least
+     *                 one entry reaches {@code maxSteps} or, if {@code 2},
+     *                 the calculation ends if the sum of all entries
+     *                 reaches {@code maxSteps}.
+     * @param maxSteps the maximum number of steps.
+     * @return this class;
+     */
+    public MarkovService calculateSteps(int type, int maxSteps) {
 
         float[] limits = new float[dimension];
         int idx = 0;
         for (; idx < results.length; idx++) {
             limits[idx] = idx > 0 ? results[idx] + limits[idx - 1] : results[idx];
         }
-
         counter = new int[dimension];
+        if (type == 1) {//Generate numbers until one reaches maxSteps
 
-        do {
-            float rand = random.nextFloat();
-            for (idx = 0; idx < results.length; idx++) {
-                if (rand <= limits[idx]) {
-                    counter[idx]++;
-                    break;
+            do {
+                float rand = random.nextFloat();
+                for (idx = 0; idx < results.length; idx++) {
+                    if (rand <= limits[idx]) {
+                        counter[idx]++;
+                        break;
+                    }
                 }
-            }
-        } while (counter[idx] < maxSteps);
+            } while (counter[idx] < maxSteps);
+        } else {//Generate maxSteps numbers.
+            int count2 = 0;
+            do {
+                float rand = random.nextFloat();
+                for (idx = 0; idx < results.length; idx++) {
+                    if (rand <= limits[idx]) {
+                        counter[idx]++;
+                        break;
+                    }
+                }
+            } while (++count2 < maxSteps);
+        }
         return this;
     }
 
