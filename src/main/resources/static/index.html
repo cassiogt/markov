@@ -1,129 +1,130 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link href="images/favicon.ico" rel="shortcut icon">
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-          crossorigin="anonymous">
-    <link rel="stylesheet"
-          href="css/main.css">
-    <title>SASC</title>
-</head>
-<body>
-<div class="container">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="images/favicon.ico" rel="shortcut icon">
+        <!--    <link rel="stylesheet"
+                  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+                  integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+                  crossorigin="anonymous">-->
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <title>SASC</title>
+    </head>
+    <body>
+        <div class="container">
 
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded">
-        <span class="navbar-brand">SASC</span>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" id="homeLink">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="configLink">Configurações</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="helpLink">Sobre</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <p>
-
-    <div id="config" class="container hide">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="steps">Limite para teste de probabilidade (padrão 1000): </label>
-                    <input type="number" class="form-control" id="steps" name="steps" value="1000">
-                    <small id="emailHelp" class="form-text text-muted">Será gerado número randomico para testar as
-                        probabilidades. O término do mesmo se dará através do primeiro estado a atingir o número acima.
-                    </small>
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark rounded">
+                <span class="navbar-brand">SASC</span>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" id="homeLink">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="configLink">Configurações</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="helpLink">Sobre</a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="stepsType">Parar contagem quando</label>
+            </nav>
+            <p>
+
+            <div id="config" class="container hide">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="steps">Limite para teste de probabilidade (padrão 1000): </label>
+                            <input type="number" class="form-control" id="steps" name="steps" value="1000">
+                            <small id="emailHelp" class="form-text text-muted">Será gerado número randomico para testar as
+                                probabilidades. O término do mesmo se dará através do primeiro estado a atingir o número acima.
+                            </small>
+                        </div>
                     </div>
-                    <select class="custom-select" id="stepsType" name="stepsType">
-                        <option value="1">a soma de pulos de uma unidade for igual ao limite especificado.</option>
-                        <option value="2" selected>a soma total de pulos for igual ao limite especificado.</option>
-                    </select>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="help" class="container hide">
-        <p>Conversor CTMC para DTMC</p>
-        <p>Este programa realiza a leitura de uma matriz CTMC inserida
-            através do campo de texto ou através de arquivo, o converte para DTMC
-            calcula as probabilidades de cada entrada e apresenta teste para comprovação
-            das probabilidades calculadas.
-        </p>
-        <p>Autores:
-            Cássio Tatsch (60064)
-            Igor Dettenborn (75314)</p>
-    </div>
-
-    <form class="row" method="POST" enctype="multipart/form-data" id="fileUploadForm">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="textInput">Insira uma matriz ou...</label>
-                <textarea class="form-control text-area " rows="5" id="textInput" name="text"></textarea>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>... selecione um arquivo para efetuar o cálculo</label>
-                        <div class="input-group">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="fileInput" name="file"
-                                       data-allowed-file-extensions="['txt']">
-                                <label class="custom-file-label" for="fileInput"></label>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="stepsType">Parar contagem quando</label>
                             </div>
+                            <select class="custom-select" id="stepsType" name="stepsType">
+                                <option value="1">a soma de pulos de uma unidade for igual ao limite especificado.</option>
+                                <option value="2" selected>a soma total de pulos for igual ao limite especificado.</option>
+                            </select>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="input-group">
-                        <button class="btn btn-outline-info btn-block" type="submit" id="submitBtn" disabled>Calcular
-                        </button>
+
+            <div id="help" class="container hide">
+                <p>Conversor CTMC para DTMC</p>
+                <p>Este programa realiza a leitura de uma matriz CTMC inserida
+                    através do campo de texto ou através de arquivo, o converte para DTMC
+                    calcula as probabilidades de cada entrada e apresenta teste para comprovação
+                    das probabilidades calculadas.
+                </p>
+                <p>Autores:<br>
+                    Cássio Tatsch (60064)<br>
+                    Igor Dettenborn (75314)</p>
+            </div>
+
+            <form class="row" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="textInput">Insira uma matriz ou...</label>
+                        <textarea class="form-control text-area " rows="5" id="textInput" name="text"></textarea>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>... selecione um arquivo para efetuar o cálculo</label>
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="fileInput" name="file"
+                                               data-allowed-file-extensions="['txt']">
+                                        <label class="custom-file-label" for="fileInput"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="input-group">
+                                <button class="btn btn-outline-info btn-block" type="submit" id="submitBtn" disabled>Calcular
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div id="alerts">
+            </div>
+            <hr/>
+
+            <div id="result" class="container">
             </div>
         </div>
-    </form>
 
-    <div id="alerts">
-    </div>
-    <hr/>
-
-    <div id="result" class="container">
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
-    <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script
-            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
-    <script src="js/index.js"></script>
-</body>
+        <!--    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+                    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+                    crossorigin="anonymous"></script>
+        
+            <script
+                    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+                    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+                    crossorigin="anonymous"></script>
+            <script src="js/index.js"></script>-->
+        <script src="assets/jquery/js/jquery-3.3.1.min.js"></script>
+        <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+        <script src="js/index.js"></script>
+    </body>
 </html>
