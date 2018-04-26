@@ -174,8 +174,9 @@ public class MarkovService {
         for (String line : lines) {
             if (!line.startsWith("#") && line.length() >= 1) {
                 String[] cols = line.trim()
-                        .replaceAll("\\t", "")
-                        .replaceAll("\\r", "")
+                        .replaceAll("\\t+", " ")
+                        .replaceAll("\\r+", " ")
+                        .replaceAll(" +", " ")
                         .split(" ");
                 if (cols.length == 1) {
                     Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
@@ -195,7 +196,6 @@ public class MarkovService {
                 }
             }
         }
-        Assert.notNull(dimension, "Não foi informada a dimensão da matriz.");
 
         float sum = 0.0f;
         for (int idx = 0; idx < dimension; idx++) {
