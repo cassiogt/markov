@@ -8,9 +8,9 @@ $(document).ready(function () {
 
     $('#textInput').on('change keyup paste', function () {
         console.log();
-        if($('#textInput').val().length > 1 || ($('.custom-file-input').val() !== undefined && $('.custom-file-input').val() !== '')){
+        if ($('#textInput').val().length > 1 || ($('.custom-file-input').val() !== undefined && $('.custom-file-input').val() !== '')) {
             $("#submitBtn").removeAttr('disabled');
-        }else{
+        } else {
             $("#submitBtn").attr('disabled', 'disabled');
         }
     });
@@ -100,7 +100,7 @@ $(document).ready(function () {
 
         $.ajax({
             url: '/convert',
-            data: $('#steps, #textInput, #stepsType').serialize() ,
+            data: $('#steps, #textInput, #stepsType').serialize(),
             method: 'GET',
             success: function (data) {
                 printResult(data);
@@ -125,7 +125,6 @@ $(document).ready(function () {
 
     function printResult(data) {
 
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var step = 0;
 
         var text = '<div class="row gray">';
@@ -135,9 +134,9 @@ $(document).ready(function () {
 
 
         text += '<div class="d-flex flex-row flex-wrap">';
-        text += buildMatrix('Matriz inserida', data.matrixList[step++]);
+        text += buildMatrix('Gerador Infinitesimal', data.matrixList[step++]);
         text += buildMatrix('Matriz Identidade', data.matrixList[step++]);
-        text += buildMatrix('DTMC convertida', data.matrixList[step++]);
+        text += buildMatrix('Matriz de Probabilidades', data.matrixList[step++]);
         for (; step < data.matrixList.length; step++) {
             text += buildMatrix('M<sup>' + (step - 1) + '</sup>', data.matrixList[step], true);
         }
@@ -145,19 +144,19 @@ $(document).ready(function () {
 
         text += '<div class="d-flex flex-row flex-wrap">';
         text += '<div class="card"><div class="card-body">';
-        text += '<h5 class="card-title">Probabilidades para cada estado</h5><p class="card-text">';
+        text += '<h5 class="card-title">Probabilidades para cada estado:</h5><p class="card-text">';
         text += '<table>';
         for (var row = 0; row < data.results.length; row++) {
-            text += '<tr><td>' + chars.charAt(row) + ':</td><td>' + (data.results[row] * 100).toFixed(2) + '%</td>';
+            text += '<tr><td>E' + row + ':</td><td>' + (data.results[row] * 100).toFixed(2) + '%</td>';
         }
         text += '</table>';
         text += '</p></div></div>';
 
         text += '<div class="card"><div class="card-body">';
-        text += '<h5 class="card-title">Exemplo prático com ' + $('#steps').val() + ' tentativas</h5><p class="card-text">';
+        text += '<h5 class="card-title">Teste com ' + $('#steps').val() + ' saltos:</h5><p class="card-text">';
         text += '<table>';
         for (var row = 0; row < data.results.length; row++) {
-            text += '<tr><td>' + chars.charAt(row) + ':</td><td>' + data.counter[row] + '</td>';
+            text += '<tr><td>E' + row + ':</td><td>' + data.counter[row] + '&nbsp;saltos</td>';
         }
         text += '</table>';
         text += '</p></div></div>';
@@ -171,7 +170,7 @@ $(document).ready(function () {
 
         var text = '<div class="card">';
         text += '<div class="card-body">';
-        text += '<h6 class="card-title">' + title + '</h6>';
+        text += '<h6 class="card-title">' + title + ':</h6>';
         text += '<p class="card-text">';
         text += '<table class="matrix">';
         for (var row = 0; row < matrix.length; row++) {

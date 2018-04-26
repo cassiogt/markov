@@ -178,7 +178,11 @@ public class MarkovService {
                         .replaceAll("\\r+", " ")
                         .replaceAll(" +", " ")
                         .split(" ");
+
                 if (cols.length == 1) {
+                    if("".equals(cols[0])){
+                        continue;
+                    }
                     Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
                     dimension = Integer.parseInt(cols[0]);
                     matrixList.add(new double[dimension][dimension]);
