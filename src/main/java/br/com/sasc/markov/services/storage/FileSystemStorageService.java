@@ -18,18 +18,32 @@ import org.springframework.util.FileSystemUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * StorageService implementation.
+ */
 @Service
 class FileSystemStorageService implements StorageService {
 
-    @Getter private final Path rootLocation;
+    @Getter
+    private final Path rootLocation;
     private final boolean cleanDirectoryBeforeUpload;
 
+    /**
+     * Constructor
+     *
+     * @param properties the storage properties.
+     */
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
         this.cleanDirectoryBeforeUpload = properties.getCleanDirectoryBeforeUpload();
     }
 
+    /**
+     * Stores a file on disk.
+     *
+     * @param file the file to be stored.
+     */
     @Override
     public void store(MultipartFile file) {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
@@ -54,6 +68,11 @@ class FileSystemStorageService implements StorageService {
         }
     }
 
+    /**
+     * Load all stored files.
+     *
+     * @return a list of file path.
+     */
     @Override
     public Stream<Path> loadAll() {
         try {
@@ -75,11 +94,23 @@ class FileSystemStorageService implements StorageService {
 
     }
 
+    /**
+     * Load a file.
+     *
+     * @param filename the file name to be loaded.
+     * @return the file path.
+     */
     @Override
     public Path load(String filename) {
         return rootLocation.resolve(filename);
     }
 
+    /**
+     * Loads a file as resource.
+     *
+     * @param filename the file name to be loaded.
+     * @return the resource file.
+     */
     @Override
     public Resource loadAsResource(String filename) {
         try {
@@ -96,11 +127,17 @@ class FileSystemStorageService implements StorageService {
         }
     }
 
+    /**
+     * Deletes all stored files.
+     */
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
+    /**
+     * Initializes storage service, creating a directory where files will be stored.
+     */
     @Override
     public void init() {
         try {

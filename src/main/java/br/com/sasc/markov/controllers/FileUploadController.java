@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * File Upload controller.
  *
- * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @RestController
 @RequestMapping("/api")

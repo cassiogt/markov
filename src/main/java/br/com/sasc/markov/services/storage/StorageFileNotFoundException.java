@@ -1,5 +1,8 @@
 package br.com.sasc.markov.services.storage;
 
+/**
+ * Storage file not Found exception class
+ */
 public class StorageFileNotFoundException extends StorageException {
 
     private static final long serialVersionUID = 1L;

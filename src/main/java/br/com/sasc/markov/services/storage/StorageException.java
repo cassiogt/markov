@@ -1,5 +1,8 @@
 package br.com.sasc.markov.services.storage;
 
+/**
+ * Storage Service Exception class.
+ */
 public class StorageException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;

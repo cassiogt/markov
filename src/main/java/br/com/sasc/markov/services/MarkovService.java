@@ -11,8 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -20,7 +18,6 @@ import org.springframework.util.Assert;
 /**
  * Markov converter methods.
  *
- * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 /**
  * Application Main Class
  *
- * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)

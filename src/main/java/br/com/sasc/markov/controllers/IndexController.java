@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * Main controller.
  *
- * @author Cássio Tatsch (tatschcassio@gmail.com)
  */
 @Controller
 public class IndexController {
@@ -77,9 +76,9 @@ public class IndexController {
                     .resolveDTMC()
                     .calculateSteps(stepsType, steps);
 
-            return new ResponseEntity<String>(ms.toJson(), HttpStatus.OK);
+            return new ResponseEntity<>(ms.toJson(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);   
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);   
         }
     }
 }
