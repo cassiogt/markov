@@ -15,6 +15,8 @@ import java.util.Random;
 import lombok.Getter;
 import org.springframework.util.Assert;
 
+import javax.xml.transform.sax.SAXSource;
+
 /**
  * Markov converter methods.
  *
@@ -85,50 +87,6 @@ public class MarkovService {
         return probabilityMatrix;
     }
 
-    /**
-     * Multiplies matrix by itself until it converges.
-     *
-     * @param input the matrix that will be multiplied.
-     * @return the result matrix.
-     */
-    private double[][] multiply(double[][] input) {
-
-        double tmp[][] = new double[dimension][dimension];
-
-        for (int r = 0; r < dimension; r++) {
-            for (int c = 0; c < dimension; c++) {
-                for (int k = 0; k < dimension; k++) {
-                    tmp[r][c] = tmp[r][c] + (input[r][k] * input[k][c]);
-                }
-            }
-        }
-
-        saveSteps(tmp);
-        if (!finished(tmp)) {
-            tmp = multiply(tmp);
-        }
-
-        return tmp;
-    }
-
-    /**
-     * Validates matrix returning {@code true} if reached its convergence or {@code false}, otherwise.
-     *
-     * @param matrix the matrix to be validated.
-     * @return {@code true} if converged or {@code false}, otherwise.
-     */
-    private boolean finished(double[][] matrix) {
-
-        for (int c = 0; c < dimension; c++) {
-            for (int r = 0; r < dimension - 1; r++) {
-                if (!new BigDecimal(matrix[r][c]).setScale(4, BigDecimal.ROUND_HALF_UP).equals(
-                        new BigDecimal(matrix[r + 1][c]).setScale(4, BigDecimal.ROUND_HALF_UP))) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
 
     /**
      * Converts a matrix to String and put this on the list of matrixList {@link MarkovService#matrixList}.
@@ -180,7 +138,7 @@ public class MarkovService {
                     if("".equals(cols[0])){
                         continue;
                     }
-                    Assert.isTrue(cols[0].matches("[0-9]"), "Entrada informada na matriz não é numérico.");
+                    Assert.isTrue(cols[0].matches("[0-9]+"), "Entrada informada na matriz não é numérico.");
                     dimension = Integer.parseInt(cols[0]);
                     matrixList.add(new double[dimension][dimension]);
                 } else {
@@ -218,6 +176,9 @@ public class MarkovService {
                 sum += matrixList.get(0)[r][c];
                 max = Math.abs(matrixList.get(0)[r][c]) > Math.abs(max) ? matrixList.get(0)[r][c] : max;
             }
+            if(sum != 0){
+                System.out.println();
+            }
             Assert.isTrue(sum == 0, "A soma das colunas não é igual a 0.");
         }
 
@@ -230,66 +191,41 @@ public class MarkovService {
         return this;
     }
 
-    /**
-     * Executes matrix calculation to transform CTMC to DTMC.
-     *
-     * @return this {@link MarkovService}.
-     */
-    public MarkovService resolveDTMC() {
+    public MarkovService resolveDTMC(int maxSteps) {
 
-        double[][] cc = multiply(buildProbabilityMatrix(buildIdentityMatrix()));
-        if (!shouldSaveAllSteps) {
-            matrixList.add(cc);
+
+        double[][] cc = buildProbabilityMatrix(buildIdentityMatrix());
+
+        int totalSum = 0;
+        counter = new int[dimension];
+
+        int state = random.nextInt(dimension);
+
+        double randomValue;
+        int lineSum;
+        int column = 0;
+
+        while(totalSum < maxSteps){
+            lineSum = 0;
+            randomValue = random.nextDouble();
+            state = calc(cc, state, lineSum, column,randomValue);
+            counter[state]++;
+            totalSum++;
         }
 
         results = new double[dimension];
-        System.arraycopy(cc[0], 0, results, 0, dimension);
-
-        Arrays.sort(results);
 
         return this;
 
     }
 
-    /**
-     * Generates random numbers to test probabilities.
-     *
-     * @param type if {@code 1} then the calculation ends if at least one entry reaches {@code maxSteps} or, if {@code 2}, the calculation ends if the sum of all entries reaches {@code maxSteps}.
-     * @param maxSteps the maximum number of steps.
-     * @return this class;
-     */
-    public MarkovService calculateSteps(int type, int maxSteps) {
+    private int calc(final double[][] matrix, final int state, double lineSum, int column, final double randomValue){
 
-        double[] limits = new double[dimension];
-        int idx = 0;
-        for (; idx < results.length; idx++) {
-            limits[idx] = idx > 0 ? results[idx] + limits[idx - 1] : results[idx];
+        lineSum += matrix[state][column];
+        if(randomValue < lineSum){
+            return column;
         }
-        counter = new int[dimension];
-        if (type == 1) {//Generate numbers until one reaches maxSteps
-
-            do {
-                float rand = random.nextFloat();
-                for (idx = 0; idx < results.length; idx++) {
-                    if (rand <= limits[idx]) {
-                        counter[idx]++;
-                        break;
-                    }
-                }
-            } while (counter[idx] < maxSteps);
-        } else {//Generate maxSteps numbers.
-            int count2 = 0;
-            do {
-                float rand = random.nextFloat();
-                for (idx = 0; idx < results.length; idx++) {
-                    if (rand <= limits[idx]) {
-                        counter[idx]++;
-                        break;
-                    }
-                }
-            } while (++count2 < maxSteps);
-        }
-        return this;
+        return calc(matrix, state, lineSum, ++column, randomValue);
     }
 
     /**

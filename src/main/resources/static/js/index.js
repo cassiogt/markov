@@ -50,23 +50,12 @@ $(document).ready(function () {
         $('#fileUploadForm').hide();
         $('#result').hide();
         $('#help').show();
-        $('#config').hide();
-    });
-
-    $("#configLink").click(function (event) {
-        removeActive();
-        $(this).parent().addClass('active');
-        $('#fileUploadForm').hide();
-        $('#result').hide();
-        $('#help').hide();
-        $('#config').show();
     });
 
     function showHome() {
         $('#fileUploadForm').show();
         $('#result').show();
         $('#help').hide();
-        $('#config').hide();
     }
 
     function doFileUpload(data) {
@@ -134,23 +123,23 @@ $(document).ready(function () {
 
 
         text += '<div class="d-flex flex-row flex-wrap">';
-        text += buildMatrix('Gerador Infinitesimal', data.matrixList[step++]);
-        text += buildMatrix('Matriz Identidade', data.matrixList[step++]);
-        text += buildMatrix('Matriz de Probabilidades', data.matrixList[step++]);
-        for (; step < data.matrixList.length; step++) {
-            text += buildMatrix('M<sup>' + (step - 1) + '</sup>', data.matrixList[step], true);
-        }
-        text += '</div>';//End flex
-
-        text += '<div class="d-flex flex-row flex-wrap">';
-        text += '<div class="card"><div class="card-body">';
-        text += '<h5 class="card-title">Probabilidades para cada estado:</h5><p class="card-text">';
-        text += '<table>';
-        for (var row = 0; row < data.results.length; row++) {
-            text += '<tr><td>E' + row + ':</td><td>' + (data.results[row] * 100).toFixed(2) + '%</td>';
-        }
-        text += '</table>';
-        text += '</p></div></div>';
+        // text += buildMatrix('Gerador Infinitesimal', data.matrixList[step++]);
+        // text += buildMatrix('Matriz Identidade', data.matrixList[step++]);
+        // text += buildMatrix('Matriz de Probabilidades', data.matrixList[step++]);
+        // for (; step < data.matrixList.length; step++) {
+        //     text += buildMatrix('M<sup>' + (step - 1) + '</sup>', data.matrixList[step], true);
+        // }
+        // text += '</div>';//End flex
+        //
+        // text += '<div class="d-flex flex-row flex-wrap">';
+        // text += '<div class="card"><div class="card-body">';
+        // text += '<h5 class="card-title">Probabilidades para cada estado:</h5><p class="card-text">';
+        // text += '<table>';
+        // for (var row = 0; row < data.results.length; row++) {
+        //     text += '<tr><td>E' + row + ':</td><td>' + (data.results[row] * 100).toFixed(2) + '%</td>';
+        // }
+        // text += '</table>';
+        // text += '</p></div></div>';
 
         text += '<div class="card"><div class="card-body">';
         text += '<h5 class="card-title">Teste com ' + $('#steps').val() + ' saltos:</h5><p class="card-text">';
