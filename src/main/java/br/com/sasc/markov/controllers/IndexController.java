@@ -10,8 +10,6 @@ import br.com.sasc.markov.services.storage.StorageService;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,13 +45,12 @@ public class IndexController {
     /**
      * CTMC to DTMC request
      *
-     * @param steps     is the maximum number of steps to be used to test the calculated probabilities.
+     * @param steps is the maximum number of steps to be used to test the calculated probabilities.
      * @return a JSON message with all information or an error message if it occurs.
      */
     @RequestMapping(value = "/convert")
     public ResponseEntity<String> execute(@RequestParam(value = "steps", defaultValue = "1000") Integer steps) {
         try {
-
 
             Path arquivo = storageService.loadAll().reduce((first, second) -> second).orElse(null);
             if (arquivo == null) {

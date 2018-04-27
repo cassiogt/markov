@@ -113,7 +113,8 @@ $(document).ready(function () {
     }
 
     function printResult(data) {
-
+ console.log(data);
+  console.log(data.results[1]);
         var step = 0;
 
         var text = '<div class="row gray">';
@@ -131,22 +132,22 @@ $(document).ready(function () {
         // }
         // text += '</div>';//End flex
         //
-        // text += '<div class="d-flex flex-row flex-wrap">';
-        // text += '<div class="card"><div class="card-body">';
-        // text += '<h5 class="card-title">Probabilidades para cada estado:</h5><p class="card-text">';
-        // text += '<table>';
-        // for (var row = 0; row < data.results.length; row++) {
-        //     text += '<tr><td>E' + row + ':</td><td>' + (data.results[row] * 100).toFixed(2) + '%</td>';
-        // }
-        // text += '</table>';
-        // text += '</p></div></div>';
+         text += '<div class="d-flex flex-row flex-wrap">';
+         text += '<div class="card"><div class="card-body">';
+         text += '<h5 class="card-title">Probabilidades para cada estado:</h5><p class="card-text">';
+         text += '<table>';
+         for (var row = 0; row < data.results.length; row++) {
+             text += '<tr><td>E' + data.results[row].position + ':</td><td>' + (data.results[row].percent).toFixed(2) + '%</td>';
+         }
+         text += '</table>';
+         text += '</p></div></div>';
 
         text += '<div class="card"><div class="card-body">';
         text += '<h5 class="card-title">Teste com ' + $('#steps').val() + ' saltos:</h5><p class="card-text">';
         text += '<table>';
         for (var row = 0; row < data.results.length; row++) {
-            text += '<tr><td>E' + row + ':</td><td>' + data.counter[row] + '&nbsp;saltos</td>';
-        }
+             text += '<tr><td>E' + data.results[row].position + ':</td><td>' + (data.results[row].value) + '</td>';
+         }
         text += '</table>';
         text += '</p></div></div>';
         text += '</div>';
